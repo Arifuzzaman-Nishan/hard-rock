@@ -7,10 +7,19 @@ const getId = (id) => {
 const getDataFromApi = (url) => {
     fetch(url)
         .then(res => res.json())
-        .then(data => songInformationDisplay(data.data))
-        .catch(error => {
-            getId("lyrics-text").innerText = "sorry something wrong try again later";
+        .then(data => {
+            if(data.data.length === 0){
+                errorMsg("sorry cannot find this music");
+            }
+            else
+            songInformationDisplay(data.data)
+           
         })
+        .catch(error => {
+           
+            errorMsg("sorry something wrong try again later");
+        })
+
 
 }
 
@@ -23,10 +32,7 @@ const searchSong = () => {
         const url = `https://api.lyrics.ovh/suggest/${searchText}`;
 
         if (searchText === '') {
-            getId("song-container").innerHTML = "";
-            getId("input-text").value = "";
-            getId("lyrics-text").innerText = "sorry please enter a song name";
-            getId("lyrics-text").style.color = "tomato";
+            errorMsg("sorry please enter a song name");
         }
         else {
             getId("input-text").value = "";
@@ -37,6 +43,13 @@ const searchSong = () => {
 }
 
 searchSong();
+
+const errorMsg = (text)=>{
+    getId("song-container").innerHTML = "";
+    getId("input-text").value = "";
+    getId("lyrics-text").innerText = text;
+    getId("lyrics-text").style.color = "tomato";
+}
 
 
 const songInformationDisplay = (songs) => {
